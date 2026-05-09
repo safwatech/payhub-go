@@ -19,6 +19,13 @@ jobs:
         with:
           go-version: '1.22'
       - run: go vet ./...
+      - name: Stage shared test vectors at the path tests expect
+        run: |
+          # Tests reference filepath.Join("..", "shared", "test-vectors", ...).
+          # On the mirror, vectors live in vendor/shared/test-vectors/ — stage
+          # a sibling 'shared/' so both monorepo and mirror runs resolve.
+          mkdir -p ../shared
+          cp -R vendor/shared/test-vectors ../shared/
       - run: go test ./...
       - name: Warm pkg.go.dev cache
         env:
